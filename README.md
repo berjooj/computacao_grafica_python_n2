@@ -19,11 +19,5 @@
    pip install -r requirements.txt
 4. Execute os arquivos:
      ```bash
-     python ./1/main.py
-     ```
-     ```bash
-     python ./2/main.py
-     ```
-     ```bash
-     python ./3/main.py
+     python ./main.py
      ```
