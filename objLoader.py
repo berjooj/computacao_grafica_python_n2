@@ -12,6 +12,7 @@ class ObjLoader:
 		self.current_material = None
 		self.textures = {}
 		self.load_obj(filename)
+		self.override_colors = {}
 
 	def load_mtl(self, mtl_file, base_path):
 		if not os.path.exists(mtl_file):
@@ -86,6 +87,9 @@ class ObjLoader:
 		except Exception as e:
 			print(f"Erro ao carregar o arquivo '.obj': {e}")
 
+	def set_material_color(self, material_name, color):
+		self.override_colors[material_name] = color
+
 	def draw(self):
 		glShadeModel(GL_SMOOTH)
 		current_mat = None
@@ -97,7 +101,10 @@ class ObjLoader:
 						glBindTexture(GL_TEXTURE_2D, self.textures[material])
 					else:
 						glDisable(GL_TEXTURE_2D)
-						glColor3fv(self.materials[material]['Kd'])
+						if material in self.override_colors:
+							glColor3fv(self.override_colors[material])
+						else:
+							glColor3fv(self.materials[material]['Kd'])
 				else:
 					glDisable(GL_TEXTURE_2D)
 					glColor3f(1, 1, 1)

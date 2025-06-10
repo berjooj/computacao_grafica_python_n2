@@ -5,12 +5,13 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from objLoader import ObjLoader
 from math import sin, cos, radians
+import random
 
-def draw_text(x, y, text, font):
+def draw_text(x, y, text, font=GLUT_BITMAP_HELVETICA_12):
 	glPushMatrix()
 	glRasterPos2f(x, y)
 	for char in text:
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, ord(char))
+		glutBitmapCharacter(font, ord(char))
 	glPopMatrix()
 
 def main():
@@ -28,6 +29,19 @@ def main():
 
 	glEnable(GL_DEPTH_TEST)
 	glEnable(GL_TEXTURE_2D)
+
+	glEnable(GL_LIGHTING)
+	glEnable(GL_LIGHT0)
+	glEnable(GL_COLOR_MATERIAL)
+
+	light_position = [0.0, 10.0, 10.0, 1.0]
+	light_diffuse = [1.0, 1.0, 1.0, 1.0]
+	light_specular = [1.0, 1.0, 1.0, 1.0]
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular)
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, [1.0, 1.0, 1.0, 1.0])
+	glMaterialf(GL_FRONT, GL_SHININESS, 128.0)
 
 	try:
 		# Nome arquivo .obj
@@ -49,6 +63,9 @@ def main():
 				if event.key == K_ESCAPE:
 					pygame.quit()
 					return
+				if event.key == K_e:
+					nova_cor = [random.uniform(0, 1) for _ in range(3)]
+					model.set_material_color('Body', nova_cor)
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_w]:
@@ -70,8 +87,12 @@ def main():
 		glClearColor(0, 0, 0, 0)
 
 		glLoadIdentity()
+
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 		gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
 		gluLookAt(camera_pos[0], camera_pos[1], camera_pos[2], 0, 0, 0, 0, 1, 0)
+
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 
 		glPushMatrix()
 		glRotatef(15.0, 1, 0, 0)
@@ -87,12 +108,15 @@ def main():
 		glPushMatrix()
 		glLoadIdentity()
 
+		glDisable(GL_LIGHTING)
 		glColor3f(1, 1, 1)
-		draw_text(10, 90, "W: Move para frente", GLUT_BITMAP_HELVETICA_12)
-		draw_text(10, 70, "S: Move para trás", GLUT_BITMAP_HELVETICA_12)
-		draw_text(10, 50, "A: Gira à esquerda", GLUT_BITMAP_HELVETICA_12)
-		draw_text(10, 30, "D: Gira à direita", GLUT_BITMAP_HELVETICA_12)
-		draw_text(10, 10, "ESC: Sair", GLUT_BITMAP_HELVETICA_12)
+		draw_text(10, 110, "W: Move para frente")
+		draw_text(10, 90, "S: Move para trás")
+		draw_text(10, 70, "A: Gira à esquerda")
+		draw_text(10, 50, "D: Gira à direita")
+		draw_text(10, 30, "E: Trocar a cor do carro")
+		draw_text(10, 10, "ESC: Sair")
+		glEnable(GL_LIGHTING)
 
 		glMatrixMode(GL_PROJECTION)
 		glPopMatrix()
