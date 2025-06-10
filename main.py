@@ -86,15 +86,21 @@ def main():
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 		glClearColor(0, 0, 0, 0)
 
+		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
 
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 		gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
 		gluLookAt(camera_pos[0], camera_pos[1], camera_pos[2], 0, 0, 0, 0, 1, 0)
 
+		light_position = [camera_pos[0] + 5.0, camera_pos[1], camera_pos[2] + 1.0, 1.0]
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 
 		glPushMatrix()
+		glRotatef(25.0, 0, 1, 0)
 		glRotatef(15.0, 1, 0, 0)
 		glTranslatef(0, -1.0, 0)
 		model.draw_with_position(pos=(0, 0, 0), scale=(1, 1, 1))
